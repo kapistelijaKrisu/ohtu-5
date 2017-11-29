@@ -1,80 +1,82 @@
 package ohtu;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class TennisGame {
-    
-    private int m_score1 = 0;
-    private int m_score2 = 0;
-    private String player1Name;
-    private String player2Name;
+
+    private final int treshold = 4;
+    private final Player challenger;
+    private final Player defender;
+    private Map<Integer, String> scoreToString;
+    private Map<Integer, String> advantageMap;
 
     public TennisGame(String player1Name, String player2Name) {
-        this.player1Name = player1Name;
-        this.player2Name = player2Name;
+        challenger = new Player(player1Name);
+        defender = new Player(player2Name);
+        initScoreToStringMap();
+        initAdvantageMap();
+    }
+//init score mappers
+
+    private void initScoreToStringMap() {
+        scoreToString = new HashMap<>();
+        scoreToString.put(0, "Love");
+        scoreToString.put(1, "Fifteen");
+        scoreToString.put(2, "Thirty");
+        scoreToString.put(3, "Forty");
     }
 
+    private void initAdvantageMap() {
+        advantageMap = new HashMap<>();
+        advantageMap.put(-1, "Advantage player2");
+        advantageMap.put(1, "Advantage player1");
+        advantageMap.put(-2, "Win for player2");
+        advantageMap.put(2, "Win for player1");
+    }
+    //publics
+
     public void wonPoint(String playerName) {
-        if (playerName == "player1")
-            m_score1 += 1;
-        else
-            m_score2 += 1;
+        if ("player1".equals(playerName)) {
+            challenger.score();
+        } else {
+            defender.score();
+        }
     }
 
     public String getScore() {
-        String score = "";
-        int tempScore=0;
-        if (m_score1==m_score2)
-        {
-            switch (m_score1)
-            {
-                case 0:
-                        score = "Love-All";
-                    break;
-                case 1:
-                        score = "Fifteen-All";
-                    break;
-                case 2:
-                        score = "Thirty-All";
-                    break;
-                case 3:
-                        score = "Forty-All";
-                    break;
-                default:
-                        score = "Deuce";
-                    break;
-                
-            }
+        if (challenger.draw(defender)) {
+            return resultWhenEven(challenger.getScore());
+        } else if (challenger.getScore() >= treshold || defender.getScore() >= treshold) {
+            return resultWhenUnderFour(challenger.getScore(), defender.getScore());
+        } else {
+            return resultWhenOverFour(challenger.getScore(), defender.getScore());
         }
-        else if (m_score1>=4 || m_score2>=4)
-        {
-            int minusResult = m_score1-m_score2;
-            if (minusResult==1) score ="Advantage player1";
-            else if (minusResult ==-1) score ="Advantage player2";
-            else if (minusResult>=2) score = "Win for player1";
-            else score ="Win for player2";
+    }
+    //privates
+    //score by scenario
+
+    private String resultWhenEven(int m_score1) {
+        if (m_score1 >= treshold) {
+            return "Deuce";
+        } else {
+            return scoreToString.get(m_score1) + "-All";
         }
-        else
-        {
-            for (int i=1; i<3; i++)
-            {
-                if (i==1) tempScore = m_score1;
-                else { score+="-"; tempScore = m_score2;}
-                switch(tempScore)
-                {
-                    case 0:
-                        score+="Love";
-                        break;
-                    case 1:
-                        score+="Fifteen";
-                        break;
-                    case 2:
-                        score+="Thirty";
-                        break;
-                    case 3:
-                        score+="Forty";
-                        break;
-                }
-            }
-        }
-        return score;
+    }
+
+    private String resultWhenOverFour(int m_score1, int m_score2) {
+        return scoreToString.get(m_score1) + "-" + scoreToString.get(m_score2);
+    }
+
+    private String resultWhenUnderFour(int m_score1, int m_score2) {
+        int difference = formatDifferenceForAdvantageMap(m_score1 - m_score2);
+        return advantageMap.get(difference);
+    }
+    //format
+
+    private int formatDifferenceForAdvantageMap(int difference) {
+        difference = Math.max(-2, difference);
+        difference = Math.min(2, difference);
+        return difference;
     }
 }
