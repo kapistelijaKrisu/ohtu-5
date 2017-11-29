@@ -14,8 +14,8 @@ public class JoukkoOperaatiotTest {
         IntJoukko eka = teeJoukko(1,2);
         IntJoukko toka = teeJoukko(3,4);
         
-        IntJoukko tulos = IntJoukko.yhdiste(eka, toka);
-        int[] vastauksenLuvut = tulos.toIntArray();
+        IntJoukko tulos = IntJoukko.getYhdisteJoukko(eka, toka);
+        int[] vastauksenLuvut = tulos.getJoukkoTaulukkona();
         Arrays.sort(vastauksenLuvut);
         
         int[] odotettu = {1,2,3,4};

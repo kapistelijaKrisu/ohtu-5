@@ -51,7 +51,7 @@ public class Sovellus {
         aJoukko = mikaJoukko();
         System.out.print("2. joukko? ");
         bJoukko = mikaJoukko();
-        c = IntJoukko.yhdiste(aJoukko, bJoukko);
+        c = IntJoukko.getYhdisteJoukko(aJoukko, bJoukko);
         System.out.println("A yhdiste B = " + c.toString());
         return;
     }
@@ -62,7 +62,7 @@ public class Sovellus {
         aJoukko = mikaJoukko();
         System.out.print("2. joukko? ");
         bJoukko = mikaJoukko();
-        c = IntJoukko.leikkaus(aJoukko, bJoukko);
+        c = IntJoukko.getLeikkausJoukko(aJoukko, bJoukko);
         System.out.println("A leikkaus B = " + c.toString());
         return;
     }
